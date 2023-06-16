@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ArkGollum": {
+      "commandName": "Project",
+      "commandLineArgs": "-s -S -m MOD -t Z:\\SteamLibrary\\steamapps\\common\\ARK"
+    }
+  }
+}
