@@ -18,3 +18,9 @@ ArkGollum is a command line tool to exfiltrate various codes useful to server ad
 - [ ] Parse vanilla items from the game directory structure.
     
 - [ ] Create GFI codes
+
+## Usage ##
+
+ArkGollum provides help via the --help or -h command parameter. In order to scan your current mods, use the -m option (mod mode) and assuming your ARK install is located at c:\SteamLibrary\steamapps\common\ARK you would type:
+
+`ArkGollum -s -S -m MOD -t c:\SteamLibrary\steamapps\common\ARK `
