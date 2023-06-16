@@ -4,7 +4,9 @@ Gollum will hunt your directories for precious so you don't have to.
 
 ArkGollum is a command line tool to exfiltrate various codes useful to server admins and players.
 
-## Ark Gollum can: ##
+ArkGollum is under development and is not feature complete.
+
+## Ark Gollum will: ##
 - [x] Extract spawn codes from all your Ark mods in one pass and deposit a txt document in each respective directory detailing all the information he found.
 
 - [x] Generate the Structures Plus Pullresourceaddition string on a per mod basis.
