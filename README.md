@@ -26,3 +26,5 @@ ArkGollum is under development and is not feature complete.
 ArkGollum provides help via the --help command parameter. In order to scan your current mods, use the -m option (mod mode) and assuming your ARK install is located at c:\SteamLibrary\steamapps\common\ARK you would type:
 
 `ArkGollum -s -S -m MOD -t c:\SteamLibrary\steamapps\common\ARK `
+
+(Further documetation to come)
