@@ -164,6 +164,7 @@ namespace ArkGollum
                 }
 
                 ssdinos = ssdinos.TrimEnd(';');
+                output.Append(ssdinos+Environment.NewLine);
             }      
 
             return output.ToString().Trim();

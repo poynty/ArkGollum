@@ -3,7 +3,6 @@
     public class ModModeProcessor : ModeProcessorBase, IModeProcessor
     {
         private readonly string pathEnd = "ShooterGame\\Content\\Mods";
-        
 
         public ModModeProcessor(Options options)
         {
@@ -13,7 +12,7 @@
 
         public void Process()
         {
-            List<IMod> modFolders = DirectoryAnalyser.GetModFolders(FolderPath,_options);
+            List<IMod> modFolders = DirectoryAnalyser.GetModFolders(FolderPath, _options);
 
             int total = modFolders.Count;
             int i = 0;
@@ -67,13 +66,14 @@
                     if (modFolder.AnalyseMod())
                     {
                         string file = Path.Combine(modFolder.ModPath, modFolder.GollumFileName);
-                        if(File.Exists(file))
+                        if (File.Exists(file))
                         {
                             try
                             {
                                 File.Delete(file);
                                 purged++;
-                            }catch(Exception e)
+                            }
+                            catch (Exception e)
                             {
                                 //Do something with this later
                                 Console.WriteLine(e.ToString());
@@ -91,7 +91,5 @@
                 Console.Write($"\b Gollum has searched in {iProgress}% of folders and has purged his work in {iPurged}% of those folders.");
             }
         }
-
-        
     }
 }
