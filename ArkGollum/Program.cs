@@ -19,8 +19,6 @@ namespace ArkGollum
                 options = result.Value as Options;
                 currentMode = options.Mode;
 
-              
-
                 IModeProcessor modeProcessor;
                 string errorReason = "";
                 switch (currentMode)

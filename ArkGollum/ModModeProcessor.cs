@@ -3,7 +3,7 @@
     public class ModModeProcessor : ModeProcessorBase, IModeProcessor
     {
         private readonly string pathEnd = "ShooterGame\\Content\\Mods";
-        private Options _options;
+        
 
         public ModModeProcessor(Options options)
         {

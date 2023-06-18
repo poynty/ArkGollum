@@ -38,7 +38,16 @@ namespace ArkGollum
             {
                 textData = GetFileHeaderString() + GetModInfoString() + textData;
 
-                string file = Path.Combine(this.ModPath, GollumFileName);
+                string file = "";
+                if(!_options.OutputSpecified)
+                {
+                    file = Path.Combine(this.ModPath, GollumFileName);
+                }
+                else
+                {
+                    file = Path.Combine(_options.Output, GollumFileName);
+                }
+
                 if(File.Exists(file))
                 {
                     File.Delete(file);
