@@ -4,6 +4,8 @@ namespace ArkGollum
 {
     public class Options
     {
+        [Option('f', "folderIncompatibilityLog", Required = false, Default = false, HelpText = "Gollum will let you know which folders were scanned yet produced no precious")]
+        public bool LogNoPrecious { get; set; }
         [Option('m', "mode", Required = true, HelpText = "BASE, MOD, WORKSHOP")]
         public Mode Mode { get; set; }
 
@@ -21,6 +23,7 @@ namespace ArkGollum
 
         [Option('t', "targetFolder", Required = true, HelpText = "The folder Gollum should begin his hunt in, this should be either your ARK folder or your steam workshop cache folder:\n\nZ:\\SteamLibrary\\steamapps\\common\\ARK\\ ")]
         public string TargetFolder { get; set; } = "";
+        
 
         public bool OutputSpecified { get; set; } = false;
     }

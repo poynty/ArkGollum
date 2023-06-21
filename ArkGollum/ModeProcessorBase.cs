@@ -5,10 +5,10 @@
         public string FolderPath { get; set; }
 
         protected Options _options;
+        protected List<string> _noPreciousInTheseDirectories = new List<string>();
 
         public virtual bool VerifyFolder(out string reason)
         {
-
             if (!Directory.Exists(FolderPath))
             {
                 reason = $"Cannot find folder {FolderPath}";
@@ -22,16 +22,16 @@
             }
 
             //Test if something is in the output option
-            if(!string.IsNullOrEmpty(_options.Output))
+            if (!string.IsNullOrEmpty(_options.Output))
             {
                 //There is, does it exist, if not creat?
-                if(!Directory.Exists(_options.Output))
+                if (!Directory.Exists(_options.Output))
                 {
                     try
                     {
-                        Directory.CreateDirectory(_options.Output);   
-                        
-                    }catch (Exception ex)
+                        Directory.CreateDirectory(_options.Output);
+                    }
+                    catch (Exception ex)
                     {
                         reason = "Failed to create output directory";
                         return false;
@@ -40,9 +40,6 @@
 
                 _options.OutputSpecified = true;
             }
-                
-
-            
 
             reason = string.Empty;
             return true;

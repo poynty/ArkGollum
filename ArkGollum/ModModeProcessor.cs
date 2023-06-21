@@ -1,4 +1,6 @@
-﻿namespace ArkGollum
+﻿using System.Text;
+
+namespace ArkGollum
 {
     public class ModModeProcessor : ModeProcessorBase, IModeProcessor
     {
@@ -32,6 +34,9 @@
                     {
                         continue;
                     }
+                }else if(_options.LogNoPrecious)
+                {
+                    _noPreciousInTheseDirectories.Add(modFolder.ModPath);
                 }
 
                 double pProgress = ((double)i / (double)total) * 100;
@@ -40,6 +45,17 @@
                 int iValid = Convert.ToInt32(pValid);
                 Console.SetCursorPosition(0, Console.CursorTop);
                 Console.Write($"\bGollum has searched in {iProgress}% of folders and has found some precious in {iValid}% of those folders.");
+            }
+
+            if(_options.LogNoPrecious&&_noPreciousInTheseDirectories.Count>0)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine($"\n\nGollum found no precious in the following directories:");
+                foreach(string folder in _noPreciousInTheseDirectories)
+                {
+                    sb.AppendLine($" - {folder}");
+                }
+                Console.WriteLine(sb.ToString());
             }
         }
 
