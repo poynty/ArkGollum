@@ -1,13 +1,8 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
 
-namespace ArkGollum
+namespace ArkGollum.CodeGenerators
 {
-    public interface ISpawnCodeGenerator
-    {
-        public string ProduceOutput(string[] files, Options options);
-    }
-
     public abstract class BaseSpawnCodeGenerator
     {
         protected List<string> _sPlusItems = new List<string>();
@@ -123,7 +118,7 @@ namespace ArkGollum
         protected virtual string GetSPlus(string[] files)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(bannerSPlus + Environment.NewLine);
+            sb.Append(bannerSPlus);
             //Generate s+ pull list
             string sPlus = "PullResourceAdditions=";
             foreach (var resource in _sPlusItems)
@@ -138,7 +133,7 @@ namespace ArkGollum
         protected virtual string GetSimpleSpawners(string[] files)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(bannerSimpleSpawners + Environment.NewLine);
+            sb.Append(bannerSimpleSpawners);
             string ssdinos = "";
             foreach (var item in _simpleSpawnerItems)
             {
@@ -193,52 +188,12 @@ namespace ArkGollum
             {
                 //case "111111111":
                 //    return new PrimitivePlusSpawnCodeGenerator();
+                case "1754846792":
+                    return new ZytharianCreaturesSpawnCodeGenerator();
 
                 default:
                     return new StandardSpawnCodeGenerator();
             }
-        }
-    }
-
-    public class StandardSpawnCodeGenerator : BaseSpawnCodeGenerator, ISpawnCodeGenerator
-    {
-        public StandardSpawnCodeGenerator()
-        {
-        }
-    }
-
-    public class PrimitivePlusSpawnCodeGenerator : BaseSpawnCodeGenerator, ISpawnCodeGenerator
-    {
-        public PrimitivePlusSpawnCodeGenerator()
-        {
-        }
-
-        protected override string GetItemSpawnCodes(string[] files, Options options)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(bannerItemSpawncodes);
-
-            //Problem to solve is the repition of \Content\Mods\
-
-            foreach (string path in files)
-            {
-                string withoutExtension = Path.GetFileNameWithoutExtension(path);
-                if (withoutExtension.StartsWith("PrimalItem"))
-                {
-                  
-                    string str7 = "admincheat GiveItem \"Blueprint'" + path.Substring(path.LastIndexOf("Content")).Replace("Content\\", "\\Game\\").Replace(".uasset", "." + withoutExtension).Replace("\\", "/") + "'\" 1 1 0";
-
-                    sb.Append(str7 + Environment.NewLine);
-
-                    if (IsRelevantPrimalItem(withoutExtension) && options.SPlus)
-                    {
-                        string itemText = GetPrimalItemLine(str7);
-                        _sPlusItems.Add(itemText);
-                    }
-                }
-            }
-
-            return sb.ToString();
         }
     }
 }
