@@ -15,8 +15,7 @@ namespace ArkGollum
 {
     public class Mod : BaseMod, IMod
     {
-        private readonly string modNameRegex = ".*?\\0\\0\\0(?<modName>.*?)\\0.*";
-        private Options _options;
+        
 
         public Mod(string path, Options options)
         {
@@ -72,107 +71,7 @@ namespace ArkGollum
             string[] files = Directory.GetFiles(ModPath, "*", SearchOption.AllDirectories);
             return spawnCodeGenerator.ProduceOutput(files, _options);
 
-            //StringBuilder output = new StringBuilder();
-
-            //List<string> simpleSpawnersDinos = new List<string>();
-            //List<string> sPlusThings = new List<string>();
-
-        
-            //string str2 = "\n---------------------------------------------------------------------------------Engram Names------------------------------------------------------------------------------------\n";
-            //string str3 = "\n---------------------------------------------------------------------------------Item Spawncodes---------------------------------------------------------------------------------\n";
-            //string str4 = "\n---------------------------------------------------------------------------------Creature Spawncodes-----------------------------------------------------------------------------\n";
-            //string str5 = "\n---------------------------------------------------------------------------------Tamed Creature Spawncodes-----------------------------------------------------------------------\n";
-            //string x1   = "\n---------------------------------------------------------------------------------S+ Pull Resources-------------------------------------------------------------------------------\n";
-            //string x2   = "\n---------------------------------------------------------------------------------Simple Spawners---------------------------------------------------------------------------------\n";
-            //string[] files = Directory.GetFiles(ModPath, "*", SearchOption.AllDirectories);
-
-           
-            //output.Append(str2);
-
-            //foreach (string path in files)
-            //{
-            //    string withoutExtension = Path.GetFileNameWithoutExtension(path);
-            //    if (withoutExtension.StartsWith("EngramEntry"))
-            //    {
-            //        string str6 = withoutExtension + "_C";
-
-            //        output.Append(str6 + Environment.NewLine);
-            //    }
-            //}
-
-            //output.Append(str3 + Environment.NewLine);
-
-            //foreach (string path in files)
-            //{
-            //    string withoutExtension = Path.GetFileNameWithoutExtension(path);
-            //    if (withoutExtension.StartsWith("PrimalItem"))
-            //    {
-            //        string str7 = "admincheat GiveItem \"Blueprint'" + path.Substring(path.IndexOf("Content")).Replace("Content\\", "\\Game\\").Replace(".uasset", "." + withoutExtension).Replace("\\", "/") + "'\" 1 1 0";
-
-            //        output.Append(str7 + Environment.NewLine);
-
-            //        if (IsRelevantPrimalItem(withoutExtension) && _options.SPlus)
-            //        {
-            //            string itemText = GetPrimalItemLine(str7);
-            //            sPlusThings.Add(itemText);
-            //        }
-            //    }
-            //}
-
-            //output.Append(str4 + Environment.NewLine);
-
-            //foreach (string path in files)
-            //{
-            //    string withoutExtension = Path.GetFileNameWithoutExtension(path);
-            //    if (withoutExtension.Contains("Character_BP"))
-            //    {
-            //        string str8 = "admincheat SpawnDino \"Blueprint'" + path.Substring(path.IndexOf("Content")).Replace("Content\\", "\\Game\\").Replace(".uasset", "." + withoutExtension).Replace("\\", "/") + "'\" 500 0 0 120";
-            //        simpleSpawnersDinos.Add("Blueprint'" + path.Substring(path.IndexOf("Content")).Replace("Content\\", "\\Game\\").Replace(".uasset", "." + withoutExtension).Replace("\\", "/") + "'");
-            //        output.Append(str8 + Environment.NewLine);
-            //    }
-            //}
-
-            //output.Append(str5 + Environment.NewLine);
-
-            //foreach (string path in files)
-            //{
-            //    string str9 = Path.GetFileNameWithoutExtension(path) + "_C";
-            //    if (str9.Contains("Character_BP"))
-            //    {
-            //        string str10 = "admincheat GMSummon \"" + str9 + "\" 120";
-
-            //        output.Append(str10 + Environment.NewLine);
-            //    }
-            //}
-
-            //if (_options.SPlus&&sPlusThings.Count>0)
-            //{
-            //    output.Append(x1 + Environment.NewLine);
-            //    //Generate s+ pull list
-            //    StringBuilder sb = new StringBuilder();
-            //    string sPlus = "PullResourceAdditions=";
-            //    foreach (var resource in sPlusThings)
-            //    {
-            //        sPlus = sPlus + resource + ",";
-            //    }
-            //    sPlus = sPlus.TrimEnd(',');
-            //    output.Append(sPlus + Environment.NewLine);
-            //}
-
-            //if (_options.SimpleSpawners&&simpleSpawnersDinos.Count>0)
-            //{
-            //    output.Append(x2 + Environment.NewLine);
-            //    string ssdinos = "";
-            //    foreach (var item in simpleSpawnersDinos)
-            //    {
-            //        ssdinos = ssdinos + item + ";";
-            //    }
-
-            //    ssdinos = ssdinos.TrimEnd(';');
-            //    output.Append(ssdinos+Environment.NewLine);
-            //}      
-
-            //return output.ToString().Trim();
+         
         }
 
         public override bool AnalyseMod()
@@ -207,7 +106,7 @@ namespace ArkGollum
 
             foreach (string file in files)
             {
-                if (Path.GetFileNameWithoutExtension(file).StartsWith("PrimalGameData"))
+                if (Path.GetFileNameWithoutExtension(file).StartsWith("PrimalGameData")||Path.GetFileNameWithoutExtension(file).StartsWith("PGD_"))
                     return true;
                 if (fileCount == amtFiles - 1)
                     return false;

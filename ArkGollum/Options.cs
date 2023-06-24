@@ -6,6 +6,8 @@ namespace ArkGollum
     {
         [Option('f', "folderIncompatibilityLog", Required = false, Default = false, HelpText = "Gollum will let you know which folders were scanned yet produced no precious")]
         public bool LogNoPrecious { get; set; }
+        [Option('l',"dinoLevel",Required =false,Default =120,HelpText = "The level of the creature to be used in the creature spawn codes")]
+        public int Level { get; set; }
         [Option('m', "mode", Required = true, HelpText = "BASE, MOD, WORKSHOP")]
         public Mode Mode { get; set; }
 

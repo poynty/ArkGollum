@@ -2,7 +2,7 @@
   "profiles": {
     "ArkGollum": {
       "commandName": "Project",
-      "commandLineArgs": "-s -S -f -m MOD -t Z:\\SteamLibrary\\steamapps\\common\\ARK -o c:\\testark"
+      "commandLineArgs": "-s -S -f -l 500 -m MOD -t Z:\\SteamLibrary\\steamapps\\common\\ARK -o c:\\testark"
     }
   }
 }

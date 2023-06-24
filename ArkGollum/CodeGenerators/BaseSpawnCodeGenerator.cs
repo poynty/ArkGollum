@@ -20,8 +20,8 @@ namespace ArkGollum.CodeGenerators
             StringBuilder output = new StringBuilder();
             output.AppendLine(GetEngramNames(files));
             output.AppendLine(GetItemSpawnCodes(files, options));
-            output.AppendLine(GetCreatureSpawnCodes(files));
-            output.AppendLine(GetTamedCreatureSpawnCodes(files));
+            output.AppendLine(GetCreatureSpawnCodes(files,options));
+            output.AppendLine(GetTamedCreatureSpawnCodes(files,options));
             if (options.SPlus)
             {
                 output.AppendLine(GetSPlus(files));
@@ -77,7 +77,7 @@ namespace ArkGollum.CodeGenerators
             return sb.ToString();
         }
 
-        protected virtual string GetCreatureSpawnCodes(string[] files)
+        protected virtual string GetCreatureSpawnCodes(string[] files, Options options)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(bannerCreatureSpawnCodes);
@@ -87,7 +87,7 @@ namespace ArkGollum.CodeGenerators
                 string withoutExtension = Path.GetFileNameWithoutExtension(path);
                 if (withoutExtension.Contains("Character_BP"))
                 {
-                    string str8 = "admincheat SpawnDino \"Blueprint'" + path.Substring(path.LastIndexOf("Content")).Replace("Content\\", "\\Game\\").Replace(".uasset", "." + withoutExtension).Replace("\\", "/") + "'\" 500 0 0 120";
+                    string str8 = "admincheat SpawnDino \"Blueprint'" + path.Substring(path.LastIndexOf("Content")).Replace("Content\\", "\\Game\\").Replace(".uasset", "." + withoutExtension).Replace("\\", "/") + $"'\" 500 0 0 {options.Level}";
                     _simpleSpawnerItems.Add("Blueprint'" + path.Substring(path.LastIndexOf("Content")).Replace("Content\\", "\\Game\\").Replace(".uasset", "." + withoutExtension).Replace("\\", "/") + "'");
                     sb.Append(str8 + Environment.NewLine);
                 }
@@ -96,7 +96,7 @@ namespace ArkGollum.CodeGenerators
             return sb.ToString();
         }
 
-        protected virtual string GetTamedCreatureSpawnCodes(string[] files)
+        protected virtual string GetTamedCreatureSpawnCodes(string[] files, Options options)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(bannerTamedCreatureSpawnCodes);
@@ -106,7 +106,7 @@ namespace ArkGollum.CodeGenerators
                 string str9 = Path.GetFileNameWithoutExtension(path) + "_C";
                 if (str9.Contains("Character_BP"))
                 {
-                    string str10 = "admincheat GMSummon \"" + str9 + "\" 120";
+                    string str10 = "admincheat GMSummon \"" + str9 + $"\" {options.Level}";
 
                     sb.Append(str10 + Environment.NewLine);
                 }
@@ -190,7 +190,6 @@ namespace ArkGollum.CodeGenerators
                 //    return new PrimitivePlusSpawnCodeGenerator();
                 case "1754846792":
                     return new ZytharianCreaturesSpawnCodeGenerator();
-
                 default:
                     return new StandardSpawnCodeGenerator();
             }

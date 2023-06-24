@@ -16,7 +16,7 @@ namespace ArkGollum.CodeGenerators
         {
         }
 
-        protected override string GetCreatureSpawnCodes(string[] files)
+        protected override string GetCreatureSpawnCodes(string[] files, Options options)
         {
             StringBuilder sb = new StringBuilder();
             //sb.Append(bannerCreatureSpawnCodes);
@@ -26,7 +26,7 @@ namespace ArkGollum.CodeGenerators
                 string withoutExtension = Path.GetFileNameWithoutExtension(path);
                 if (withoutExtension.Contains("Character_BP"))
                 {
-                    string str8 = "admincheat SpawnDino \"Blueprint'" + path.Substring(path.LastIndexOf("Content")).Replace("Content\\", "\\Game\\").Replace(".uasset", "." + withoutExtension).Replace("\\", "/") + "'\" 500 0 0 120";
+                    string str8 = "admincheat SpawnDino \"Blueprint'" + path.Substring(path.LastIndexOf("Content")).Replace("Content\\", "\\Game\\").Replace(".uasset", "." + withoutExtension).Replace("\\", "/") + $"'\" 500 0 0 {options.Level}";
 
                     if (withoutExtension.Contains("AO"))
                     {
@@ -55,7 +55,7 @@ namespace ArkGollum.CodeGenerators
             return sb.ToString();
         }
 
-        protected override string GetTamedCreatureSpawnCodes(string[] files)
+        protected override string GetTamedCreatureSpawnCodes(string[] files, Options options)
         {
             StringBuilder sb = new StringBuilder();
             //sb.Append(bannerTamedCreatureSpawnCodes);
@@ -65,7 +65,7 @@ namespace ArkGollum.CodeGenerators
                 string str9 = Path.GetFileNameWithoutExtension(path) + "_C";
                 if (str9.Contains("Character_BP"))
                 {
-                    string str10 = "admincheat GMSummon \"" + str9 + "\" 120";
+                    string str10 = "admincheat GMSummon \"" + str9 + $"\" {options.Level}";
 
                     if (str9.Contains("AO"))
                     {

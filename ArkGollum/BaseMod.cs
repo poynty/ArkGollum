@@ -4,6 +4,8 @@ namespace ArkGollum
 {
     public abstract class BaseMod
     {
+        protected readonly string modNameRegex = ".*?\\0\\0\\0(?<modName>.*?)\\0.*";
+        protected Options _options;
         protected readonly string _steamWorkshopBaseURL = @"https://steamcommunity.com/sharedfiles/filedetails/?id=";
         
         public string ModPath { get; set; } = "";
