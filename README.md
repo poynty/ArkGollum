@@ -1,4 +1,4 @@
-# ArkGollum
+# ArkGollum - for the game ARK: Survival Evolved
 
 Gollum will hunt your directories for precious so you don't have to.
 
