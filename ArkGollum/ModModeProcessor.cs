@@ -27,16 +27,27 @@ namespace ArkGollum
                 {
                     if (modFolder.AnalyseMod())
                     {
-                        modFolder.GenerateOutput();
-                        valid++;
+                        if (modFolder.GenerateOutput())
+                        {
+                            valid++;
+                        }
+                        else
+                        {
+                            if (_options.LogNoPrecious)
+                            {
+                                _noPreciousInTheseDirectories.Add(modFolder.ModPath+$" :: {modFolder.ModName}");
+                            }
+                            continue;
+                        }
                     }
                     else
                     {
+                      
                         continue;
                     }
                 }else if(_options.LogNoPrecious)
                 {
-                    _noPreciousInTheseDirectories.Add(modFolder.ModPath);
+                    _noPreciousInTheseDirectories.Add(modFolder.ModPath + $" :: {modFolder.ModName}");
                 }
 
                 double pProgress = ((double)i / (double)total) * 100;
@@ -56,6 +67,13 @@ namespace ArkGollum
                     sb.AppendLine($" - {folder}");
                 }
                 Console.WriteLine(sb.ToString());
+                try
+                {
+                    File.WriteAllText(_options.Output + "\\NoPrecious.txt", sb.ToString());
+                }catch(Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
             }
         }
 

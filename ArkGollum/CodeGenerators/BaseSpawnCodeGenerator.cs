@@ -15,29 +15,110 @@ namespace ArkGollum.CodeGenerators
         protected readonly string bannerSPlus = "\n---------------------------------------------------------------------------------S+ Pull Resources-------------------------------------------------------------------------------\n";
         protected readonly string bannerSimpleSpawners = "\n---------------------------------------------------------------------------------Simple Spawners---------------------------------------------------------------------------------\n";
 
+        protected int engramCount = 0;
+        protected int itemCount = 0;
+        protected int creatureCount = 0;
+        protected int tamedCreatureCount = 0;
+
+        protected List<string> engrams = new List<string>();
+        protected List<string> items = new List<string>();
+        protected List<string> creatures = new List<string>();
+        protected List<string> tamedCreatures = new List<string>();
+
+        public bool HasSearchedForCodes { get; set; } = false;
+
         public virtual string ProduceOutput(string[] files, Options options)
         {
+            if (!HasSearchedForCodes)
+            {
+                throw new Exception("Can only produce output after searching for codes");
+            }
+
+            if (!HasCodesToOutput())
+            {
+                throw new Exception("Nothing to output");
+            }
+
             StringBuilder output = new StringBuilder();
-            output.AppendLine(GetEngramNames(files));
-            output.AppendLine(GetItemSpawnCodes(files, options));
-            output.AppendLine(GetCreatureSpawnCodes(files,options));
-            output.AppendLine(GetTamedCreatureSpawnCodes(files,options));
-            if (options.SPlus)
+
+            if (engramCount > 0)
             {
-                output.AppendLine(GetSPlus(files));
+                output.Append(bannerEngramNames);
+                foreach (string engram in engrams)
+                {
+                    output.AppendLine(engram);
+                }
             }
-            if (options.SimpleSpawners)
+
+            if (itemCount > 0)
             {
-                output.AppendLine(GetSimpleSpawners(files));
+                output.Append(bannerItemSpawncodes);
+                foreach (string item in items)
+                {
+                    output.AppendLine(item);
+                }
             }
+
+            if (creatureCount > 0)
+            {
+                output.Append(bannerCreatureSpawnCodes);
+                foreach (string creature in creatures)
+                {
+                    output.AppendLine(creature);
+                }
+            }
+
+            if (tamedCreatureCount > 0)
+            {
+                output.Append(bannerTamedCreatureSpawnCodes);
+                foreach (string tameCreature in tamedCreatures)
+                {
+                    output.AppendLine(tameCreature);
+                }
+            }
+
+            if (options.SPlus && _sPlusItems.Count > 0)
+            {
+                output.Append(GetSPlus());
+            }
+
+            if (options.SimpleSpawners && _simpleSpawnerItems.Count > 0)
+            {
+                output.Append(GetSimpleSpawners());
+            }
+
             return output.ToString();
         }
 
-        protected virtual string GetEngramNames(string[] files)
+        public virtual bool HasCodesToOutput()
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(bannerEngramNames);
+            return engramCount + itemCount + creatures.Count + tamedCreatureCount > 0;
+        }
 
+        public virtual void FindCodes(string[] files, Options options)
+        {
+            HasSearchedForCodes = false;
+
+            engramCount = 0;
+            itemCount = 0;
+            creatureCount = 0;
+            tamedCreatureCount = 0;
+
+            engrams.Clear();
+            items.Clear();
+            creatures.Clear();
+            tamedCreatures.Clear();
+
+            FindEngrams(files);
+            FindItems(files, options);
+            FindCreatures(files, options);
+            FindTamedCreatures(files, options);
+
+            HasSearchedForCodes = true;
+        }
+
+        protected virtual void FindEngrams(string[] files)
+        {
             foreach (string path in files)
             {
                 string withoutExtension = Path.GetFileNameWithoutExtension(path);
@@ -45,26 +126,22 @@ namespace ArkGollum.CodeGenerators
                 {
                     string str6 = withoutExtension + "_C";
 
-                    sb.Append(str6 + Environment.NewLine);
+                    engramCount++;
+                    engrams.Add(str6);
                 }
             }
-
-            return sb.ToString();
         }
 
-        protected virtual string GetItemSpawnCodes(string[] files, Options options)
+        protected virtual void FindItems(string[] files, Options options)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(bannerItemSpawncodes);
-
             foreach (string path in files)
             {
                 string withoutExtension = Path.GetFileNameWithoutExtension(path);
                 if (withoutExtension.StartsWith("PrimalItem"))
                 {
+                    itemCount++;
                     string str7 = "admincheat GiveItem \"Blueprint'" + path.Substring(path.LastIndexOf("Content")).Replace("Content\\", "\\Game\\").Replace(".uasset", "." + withoutExtension).Replace("\\", "/") + "'\" 1 1 0";
-
-                    sb.Append(str7 + Environment.NewLine);
+                    items.Add(str7);
 
                     if (IsRelevantPrimalItem(withoutExtension) && options.SPlus)
                     {
@@ -73,49 +150,41 @@ namespace ArkGollum.CodeGenerators
                     }
                 }
             }
-
-            return sb.ToString();
         }
 
-        protected virtual string GetCreatureSpawnCodes(string[] files, Options options)
+        protected virtual void FindCreatures(string[] files, Options options)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(bannerCreatureSpawnCodes);
-
             foreach (string path in files)
             {
                 string withoutExtension = Path.GetFileNameWithoutExtension(path);
                 if (withoutExtension.Contains("Character_BP"))
                 {
+                    creatureCount++;
                     string str8 = "admincheat SpawnDino \"Blueprint'" + path.Substring(path.LastIndexOf("Content")).Replace("Content\\", "\\Game\\").Replace(".uasset", "." + withoutExtension).Replace("\\", "/") + $"'\" 500 0 0 {options.Level}";
                     _simpleSpawnerItems.Add("Blueprint'" + path.Substring(path.LastIndexOf("Content")).Replace("Content\\", "\\Game\\").Replace(".uasset", "." + withoutExtension).Replace("\\", "/") + "'");
-                    sb.Append(str8 + Environment.NewLine);
+                    creatures.Add(str8);
                 }
             }
-
-            return sb.ToString();
         }
 
-        protected virtual string GetTamedCreatureSpawnCodes(string[] files, Options options)
+        protected virtual void FindTamedCreatures(string[] files, Options options)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(bannerTamedCreatureSpawnCodes);
-
             foreach (string path in files)
             {
                 string str9 = Path.GetFileNameWithoutExtension(path) + "_C";
                 if (str9.Contains("Character_BP"))
                 {
                     string str10 = "admincheat GMSummon \"" + str9 + $"\" {options.Level}";
-
-                    sb.Append(str10 + Environment.NewLine);
+                    tamedCreatureCount++;
+                    tamedCreatures.Add(str10);
                 }
             }
-
-            return sb.ToString();
         }
 
-        protected virtual string GetSPlus(string[] files)
+      
+
+      
+        protected virtual string GetSPlus()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(bannerSPlus);
@@ -130,7 +199,7 @@ namespace ArkGollum.CodeGenerators
             return sb.ToString();
         }
 
-        protected virtual string GetSimpleSpawners(string[] files)
+        protected virtual string GetSimpleSpawners()
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(bannerSimpleSpawners);
@@ -190,6 +259,7 @@ namespace ArkGollum.CodeGenerators
                 //    return new PrimitivePlusSpawnCodeGenerator();
                 case "1754846792":
                     return new ZytharianCreaturesSpawnCodeGenerator();
+
                 default:
                     return new StandardSpawnCodeGenerator();
             }

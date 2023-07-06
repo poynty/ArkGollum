@@ -18,19 +18,6 @@ namespace ArkGollum.CodeGenerators
             return base.ProduceOutput(files, options);
         }
 
-        protected override string GetEngramNames(string[] files)
-        {
-            return base.GetEngramNames(files);
-        }
-
-        protected override string GetItemSpawnCodes(string[] files, Options options)
-        {
-            return base.GetItemSpawnCodes(files, options);
-        }
-
-        protected override string GetCreatureSpawnCodes(string[] files, Options options)
-        {
-            return base.GetCreatureSpawnCodes(files, options);
-        }
+       
     }
 }

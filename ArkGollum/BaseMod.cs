@@ -18,6 +18,7 @@ namespace ArkGollum
 
         public string SteamWorkshopURL { get; set; } = "";
 
+
         public abstract bool GenerateOutput();
 
         public abstract bool IsValidMod();

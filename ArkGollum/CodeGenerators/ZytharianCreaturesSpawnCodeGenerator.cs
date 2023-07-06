@@ -16,16 +16,89 @@ namespace ArkGollum.CodeGenerators
         {
         }
 
-        protected override string GetCreatureSpawnCodes(string[] files, Options options)
+        public override string ProduceOutput(string[] files, Options options)
         {
-            StringBuilder sb = new StringBuilder();
-            //sb.Append(bannerCreatureSpawnCodes);
+            if (!HasSearchedForCodes)
+            {
+                throw new Exception("Can only produce output after searching for codes");
+            }
 
+            if (!HasCodesToOutput())
+            {
+                throw new Exception("Nothing to output");
+            }
+
+            StringBuilder output = new StringBuilder();
+
+            if (engramCount > 0)
+            {
+                output.Append(bannerEngramNames);
+                foreach (string engram in engrams)
+                {
+                    output.AppendLine(engram);
+                }
+            }
+
+            if (itemCount > 0)
+            {
+                output.Append(bannerItemSpawncodes);
+                foreach (string item in items)
+                {
+                    output.AppendLine(item);
+                }
+            }
+
+            if (creatureCount > 0)
+            {
+                output.Append(bannerCreatureSpawnCodes);
+                foreach (var line in zytharianCodes)
+                {
+                    output.Append(line + Environment.NewLine);
+                }
+
+                output.Append(bannerOmegaCreatureSpawnCodes);
+                foreach (var line in arkOmegaCodes)
+                {
+                    output.Append(line + Environment.NewLine);
+                }
+            }
+
+            if (tamedCreatureCount > 0)
+            {
+                output.Append(bannerTamedCreatureSpawnCodes);
+                foreach (var line in zytharianTamedCodes)
+                {
+                    output.Append(line + Environment.NewLine);
+                }
+
+                output.Append(bannerTamedOmegaCreatureSpawnCodes);
+                foreach (var line in arkTamedOmegaCodes)
+                {
+                    output.Append(line + Environment.NewLine);
+                }
+            }
+
+            if (options.SPlus && _sPlusItems.Count > 0)
+            {
+                output.Append(GetSPlus());
+            }
+
+            if (options.SimpleSpawners && _simpleSpawnerItems.Count > 0)
+            {
+                output.Append(GetSimpleSpawners());
+            }
+
+            return output.ToString();
+        }
+
+        protected override void FindCreatures(string[] files, Options options)
+        {
             foreach (string path in files)
             {
                 string withoutExtension = Path.GetFileNameWithoutExtension(path);
                 if (withoutExtension.Contains("Character_BP"))
                 {
+                    creatureCount++;
                     string str8 = "admincheat SpawnDino \"Blueprint'" + path.Substring(path.LastIndexOf("Content")).Replace("Content\\", "\\Game\\").Replace(".uasset", "." + withoutExtension).Replace("\\", "/") + $"'\" 500 0 0 {options.Level}";
 
                     if (withoutExtension.Contains("AO"))
@@ -40,28 +113,16 @@ namespace ArkGollum.CodeGenerators
                     _simpleSpawnerItems.Add("Blueprint'" + path.Substring(path.LastIndexOf("Content")).Replace("Content\\", "\\Game\\").Replace(".uasset", "." + withoutExtension).Replace("\\", "/") + "'");
                 }
             }
-
-            sb.Append(bannerCreatureSpawnCodes);
-            foreach (var line in zytharianCodes)
-            {
-                sb.Append(line + Environment.NewLine);
-            }
-
-            sb.Append(bannerOmegaCreatureSpawnCodes);
-            foreach (var line in arkOmegaCodes)
-            {
-                sb.Append(line + Environment.NewLine);
-            }
-            return sb.ToString();
         }
 
-        protected override string GetTamedCreatureSpawnCodes(string[] files, Options options)
+        protected override void FindTamedCreatures(string[] files, Options options)
         {
-            StringBuilder sb = new StringBuilder();
+            //StringBuilder sb = new StringBuilder();
             //sb.Append(bannerTamedCreatureSpawnCodes);
 
             foreach (string path in files)
             {
+                tamedCreatureCount++;
                 string str9 = Path.GetFileNameWithoutExtension(path) + "_C";
                 if (str9.Contains("Character_BP"))
                 {
@@ -77,20 +138,6 @@ namespace ArkGollum.CodeGenerators
                     }
                 }
             }
-
-            sb.Append(bannerTamedCreatureSpawnCodes);
-            foreach (var line in zytharianTamedCodes)
-            {
-                sb.Append(line + Environment.NewLine);
-            }
-
-            sb.Append(bannerTamedOmegaCreatureSpawnCodes);
-            foreach (var line in arkTamedOmegaCodes)
-            {
-                sb.Append(line + Environment.NewLine);
-            }
-
-            return sb.ToString();
         }
     }
 }

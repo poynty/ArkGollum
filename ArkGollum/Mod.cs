@@ -4,19 +4,14 @@
 ////
 ////
 
-
-
-
+using ArkGollum.CodeGenerators;
 using System.Text;
 using System.Text.RegularExpressions;
-using ArkGollum.CodeGenerators;
 
 namespace ArkGollum
 {
     public class Mod : BaseMod, IMod
     {
-        
-
         public Mod(string path, Options options)
         {
             ModPath = path;
@@ -30,48 +25,58 @@ namespace ArkGollum
                 throw new Exception("Gollum must analyse the folder first by calling .AnalyseMod()");
             }
 
-            string textData = MakeSpawnCodes();
+            string textData = "";
 
-
-
-            try
+            if (MakeSpawnCodes(out textData))
             {
-                textData = GetFileHeaderString() + GetModInfoString() + textData;
-
-                string file = "";
-                if(!_options.OutputSpecified)
+                try
                 {
-                    file = Path.Combine(this.ModPath, GollumFileName);
+                    textData = GetFileHeaderString() + GetModInfoString() + textData;
+
+                    string file = "";
+                    if (!_options.OutputSpecified)
+                    {
+                        file = Path.Combine(this.ModPath, GollumFileName);
+                    }
+                    else
+                    {
+                        file = Path.Combine(_options.Output, GollumFileName);
+                    }
+
+                    if (File.Exists(file))
+                    {
+                        File.Delete(file);
+                    }
+
+                    File.WriteAllText(file, textData);
+
+                    return true;
                 }
-                else
+                catch (Exception ex)
                 {
-                    file = Path.Combine(_options.Output, GollumFileName);
+                    //logging in future
+                    Console.WriteLine(ex.ToString());
+                    return false;
                 }
-
-                if(File.Exists(file))
-                {
-                    File.Delete(file);
-                }
-
-                File.WriteAllText(file, textData);
-
-            }catch (Exception ex) {
-                //logging in future
-                Console.WriteLine(ex.ToString());
-                return false;
             }
-          
 
-            return true;
+            return false;
         }
 
-        private string MakeSpawnCodes()
+        private bool MakeSpawnCodes(out string result)
         {
             ISpawnCodeGenerator spawnCodeGenerator = BaseSpawnCodeGenerator.GetGeneratorForMod(this);
             string[] files = Directory.GetFiles(ModPath, "*", SearchOption.AllDirectories);
-            return spawnCodeGenerator.ProduceOutput(files, _options);
 
-         
+            spawnCodeGenerator.FindCodes(files, _options);
+            if (spawnCodeGenerator.HasCodesToOutput())
+            {
+                result = spawnCodeGenerator.ProduceOutput(files, _options);
+                return true;
+            }
+
+            result = "";
+            return false;
         }
 
         public override bool AnalyseMod()
@@ -106,7 +111,7 @@ namespace ArkGollum
 
             foreach (string file in files)
             {
-                if (Path.GetFileNameWithoutExtension(file).StartsWith("PrimalGameData")||Path.GetFileNameWithoutExtension(file).StartsWith("PGD_"))
+                if (Path.GetFileNameWithoutExtension(file).StartsWith("PrimalGameData") || Path.GetFileNameWithoutExtension(file).StartsWith("PGD_"))
                     return true;
                 if (fileCount == amtFiles - 1)
                     return false;
@@ -128,7 +133,7 @@ namespace ArkGollum
 
         public string GetModInfoString()
         {
-            if(!IsAnalysed)
+            if (!IsAnalysed)
             {
                 throw new Exception("Cannot provide info for un-analyzed mod");
             }
